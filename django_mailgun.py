@@ -102,7 +102,6 @@ class MailgunBackend(BaseEmailBackend):
                       for addr in email_message.recipients()]
 
         try:
-
             post_data = []
             post_data.append(('to', (",".join(recipients)),))
             post_data.append(('text', email_message.body,))
@@ -143,10 +142,11 @@ class MailgunBackend(BaseEmailBackend):
 
             response = requests.post(self._api_url + "messages",
                     auth=("api", self._access_key),
+                    verify=False,
                     data=content, headers=headers)
-        except:
+        except Exception as e:
             if not self.fail_silently:
-                raise
+                raise e
             return False
 
         if response.status_code != 200:
